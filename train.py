@@ -80,6 +80,8 @@ def test(epoch):
             'epoch': epoch,
         }
         torch.save(state, './checkpoint/ckpt.pt')
+        torch.save(net,'./net/net%d.pt'%epoch)
+        torch.save(net.state_dict(),'./state_dict/sd%d.pt'%epoch)
         best_acc = acc
 
 
