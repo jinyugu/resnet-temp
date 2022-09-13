@@ -73,14 +73,14 @@ def test(epoch):
     # Save checkpoint.
     acc = 100.*correct/total
     if acc > best_acc:
-        print('Saving..')
-        state = {
-            'net': net.state_dict(),
-            'acc': acc,
-            'epoch': epoch,
-        }
-        torch.save(state, './checkpoint/ckpt.pt')
-        torch.save(net,'./net/net%d.pt'%epoch)
+    #     print('Saving..')
+    #     state = {
+    #         'net': net.state_dict(),
+    #         'acc': acc,
+    #         'epoch': epoch,
+    #     }
+        # torch.save(state, './checkpoint/ckpt.pt')
+        # torch.save(net,'./net/net%d.pt'%epoch)
         torch.save(net.state_dict(),'./state_dict/sd%d.pt'%epoch)
         best_acc = acc
 
