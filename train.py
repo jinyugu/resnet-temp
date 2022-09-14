@@ -94,7 +94,7 @@ def get_accuracy(model, x_orig, y_orig, bs=64, device=torch.device('cuda:0')):
         y = y_orig[counter * bs:min((counter + 1) * bs, x_orig.shape[0])].clone().to(device)
         output = model(x)
         acc += (output.max(1)[1] == y).float().sum()
-    print("accuracy on test:", acc)
+    print("accuracy on test:", (acc / x_orig.shape[0]).item())
     return (acc / x_orig.shape[0]).item()
 
 if __name__ == '__main__':
