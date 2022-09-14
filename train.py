@@ -73,7 +73,7 @@ def test(epoch):
     # Save checkpoint.
     acc = 100.*correct/total
     if acc > best_acc:
-    #     print('Saving..')
+        print('Saving..')
     #     state = {
     #         'net': net.state_dict(),
     #         'acc': acc,
@@ -81,13 +81,29 @@ def test(epoch):
     #     }
         # torch.save(state, './checkpoint/ckpt.pt')
         # torch.save(net,'./net/net%d.pt'%epoch)
-        torch.save(net.state_dict(),'./state_dict/sd%d.pt'%epoch)
+        torch.save(net.state_dict(),'./state_dict/sd%d%f.pt'%(epoch,acc))
         best_acc = acc
 
 
+def get_accuracy(model, x_orig, y_orig, bs=64, device=torch.device('cuda:0')):
+    n_batches = x_orig.shape[0] // bs
+    print("n_batches:",n_batches)
+    acc = 0.
+    for counter in range(n_batches):
+        x = x_orig[counter * bs:min((counter + 1) * bs, x_orig.shape[0])].clone().to(device)
+        y = y_orig[counter * bs:min((counter + 1) * bs, x_orig.shape[0])].clone().to(device)
+        output = model(x)
+        acc += (output.max(1)[1] == y).float().sum()
+    print("accuracy on test:", acc)
+    return (acc / x_orig.shape[0]).item()
+
 if __name__ == '__main__':
     start_epoch = start_epoch  # start from epoch 0 or last checkpoint epoch
-
+    x_val, y_val = next(iter(testloader))
+    print(f'x_val shape: {x_val.shape}')
+    x_val, y_val = x_val.contiguous().requires_grad_(True), y_val.contiguous()
+    print(f'x (min, max): ({x_val.min()}, {x_val.max()})')
     for epoch in range(start_epoch, start_epoch + 20):
         train(epoch)
         test(epoch)
+        get_accuracy(model=net,x_orig=x_val,y_orig=y_val)
